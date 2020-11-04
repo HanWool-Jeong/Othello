@@ -4,6 +4,9 @@ using namespace bangtal;
 using namespace std;
 
 ObjectPtr board[8][8];
+
+// 돌 개수를 표시하는 라벨 객체
+// 10Label은 10의자리, 1Label은 1의 자리를 표시
 ObjectPtr black10Label, black1Label;
 ObjectPtr white10Label, white1Label;
 
@@ -140,7 +143,8 @@ void reverse(int x, int y)
 	}
 }
 
-// 돌 개수 세서 보여주기
+// 돌 개수 세서 보여주는 함수
+// 10Label, 1Label 객체를 바꿔서 돌 개수를 표시한다
 void setStoneNumber()
 {
 	int blackNum = 0, whiteNum = 0;
@@ -182,6 +186,7 @@ void setStoneNumber()
 		img = "images/L" + to_string(whiteNum - white10 * 10) + ".png";
 		white1Label->setImage(img);
 	}
+	// 백돌 개수가 10 미만일 때, 숫자의 왼쪽 정렬을 위해 10Label에다 1의 자리를 표시한다.
 	else {
 		img = "images/L" + to_string(whiteNum) + ".png";
 		white10Label->setImage(img);
@@ -222,12 +227,14 @@ int checkComStoneGet(int x, int y)
 
 	int sum_of_possible_stone = 0;
 	for (auto d : delta) {
+		// 모든 8방향을 체크해서 얻을 수 있는 돌을 합산한다
 		sum_of_possible_stone += checkComStoneGet(x, y, d[0], d[1]);
 	}
 
 	return sum_of_possible_stone;
 }
 
+// 컴퓨터가 백돌을 놓도록 하는 함수
 void computerPutWhite()
 {
 	// 어떤 x, y에 놓았을 때, 얼마만큼 돌을 얻을 수 있는지를 저장하는 구조체
@@ -253,7 +260,7 @@ void computerPutWhite()
 	}
 	lsAry_index--;
 
-	// 모든 Possible에 대하여 그곳에 놓았을 때 가장 많이 놓을 수 있는 곳을 찾는다.
+	// 모든 Possible에 대하여 그곳에 놓았을 때 가장 많이 놓을 수 있는 곳을 찾는다(linear search).
 	LargestStone max = lsAry[0];
 	for (int i = 1; i < lsAry_index; i++) {
 		if (lsAry[i].num_of_stone > max.num_of_stone)
@@ -327,11 +334,11 @@ int main(void)
 		}
 	}
 
+	// 게임 초기화
 	setState(3, 3, State::BLACK);
 	setState(4, 4, State::BLACK);
 	setState(3, 4, State::WHITE);
 	setState(4, 3, State::WHITE);
-
 	setPossible();
 
 	startGame(scene);
